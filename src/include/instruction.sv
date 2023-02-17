@@ -15,7 +15,7 @@
 */
 
 
-import alu::s_config;
+import alu::s_control;
 import common::*;
 
 package instruction;
@@ -92,7 +92,7 @@ package instruction;
 		e_kind kind;
 		e_cond cond;
 
-		s_config alu_config;
+		s_control alu_config;
 
 		bit[4:0] rd;
 		bit[4:0] rs;

@@ -49,5 +49,5 @@ package alu;
         e_unary_op b_op;
         s_shift b_shift;
         e_unary_op out_op;
-    } s_config;
+    } s_control;
 endpackage
