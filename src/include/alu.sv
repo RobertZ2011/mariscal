@@ -14,10 +14,9 @@
 * external case of any product you make using this documentation.
 */
 
+import p_common::*;
 
-import common::*;
-
-package alu;
+package p_alu;
     typedef enum {
         CORE_OP_ADD,
         CORE_OP_AND,

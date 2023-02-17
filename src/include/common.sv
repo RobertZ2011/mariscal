@@ -14,8 +14,7 @@
 * external case of any product you make using this documentation.
 */
 
-
-package common;
+package p_common;
     typedef enum bit[2:0] {
 		SHIFT_SHL,
 		SHIFT_SHR,

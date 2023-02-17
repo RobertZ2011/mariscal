@@ -14,11 +14,10 @@
 * external case of any product you make using this documentation.
 */
 
+import p_alu::*;
+import p_common::*;
 
-import alu::s_control;
-import common::*;
-
-package instruction;
+package p_instruction;
 	typedef enum bit[2:0] {
 		KIND_RRR,
 		KIND_MEMORY,

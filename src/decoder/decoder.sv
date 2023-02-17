@@ -1,6 +1,6 @@
-import instruction::*;
+import p_instruction::*;
 
-module decoder(
+module m_decoder(
 	input[31:0] instr,
 	output s_decoded decoded
 );
