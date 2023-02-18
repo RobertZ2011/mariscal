@@ -13,43 +13,39 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
+import p_instruction::*;
 
-import p_common::*;
+module m_reg_decoder(
+	input e_kind kind,
+	input[31:0] instruction,
 
-package p_alu;
-    typedef enum {
-        CORE_OP_ADD,
-        CORE_OP_AND,
-        CORE_OP_XOR,
+	output[4:0] rd,
+	output[4:0] rs,
+	output[4:0] rq
+);
 
-        CORE_OP_SHL,
-        CORE_OP_SHR,
-        CORE_OP_ASL,
-        CORE_OP_ASR,
-        CORE_OP_ROL,
-        CORE_OP_ROR,
+	function[4:0] f_rd(e_kind k, input[31:0] i);
+		case (k)
+			KIND_RRR: return i[12:8];
+			default: return 5'b0;
+		endcase
+	endfunction
 
-        CORE_OP_INVALID
-    } e_core_op;
+	function[4:0] f_rs(e_kind k, input[31:0] i);
+		case (k)
+			KIND_RRR: return i[12:8];
+			default: return 5'b0;
+		endcase
+	endfunction
 
-    typedef enum {
-        UNARY_OP_ID,
-        UNARY_OP_NEG,
-        UNARY_OP_NOT,
-        UNARY_OP_ZERO
-    } e_unary_op;
+	function[4:0] f_rq(e_kind k, input[31:0] i);
+		case (k)
+			KIND_RRR: return i[12:8];
+			default: return 5'b0;
+		endcase
+	endfunction
 
-    typedef enum {
-        CMP_RES_EQ,
-        CMP_RES_GT,
-        CMP_RES_LT
-    } e_cmp_res;
-
-    typedef struct packed {
-        e_core_op op;
-        e_unary_op a_op;
-        e_unary_op b_op;
-        s_shift b_shift;
-        e_unary_op out_op;
-    } s_control;
-endpackage
+	assign rd = f_rd(kind, instruction);
+	assign rs = f_rs(kind, instruction);
+	assign rq = f_rq(kind, instruction);
+endmodule

@@ -98,8 +98,6 @@ package p_instruction;
 		bit[4:0] rq;
 
 		bit[31:0] immedate;
-
-		e_shift_type shift_type;
-		bit[4:0] shift_amt;
+		s_shift shift;
 	} s_decoded;
 endpackage

@@ -13,43 +13,12 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
+import p_instruction::*;
 
-import p_common::*;
-
-package p_alu;
-    typedef enum {
-        CORE_OP_ADD,
-        CORE_OP_AND,
-        CORE_OP_XOR,
-
-        CORE_OP_SHL,
-        CORE_OP_SHR,
-        CORE_OP_ASL,
-        CORE_OP_ASR,
-        CORE_OP_ROL,
-        CORE_OP_ROR,
-
-        CORE_OP_INVALID
-    } e_core_op;
-
-    typedef enum {
-        UNARY_OP_ID,
-        UNARY_OP_NEG,
-        UNARY_OP_NOT,
-        UNARY_OP_ZERO
-    } e_unary_op;
-
-    typedef enum {
-        CMP_RES_EQ,
-        CMP_RES_GT,
-        CMP_RES_LT
-    } e_cmp_res;
-
-    typedef struct packed {
-        e_core_op op;
-        e_unary_op a_op;
-        e_unary_op b_op;
-        s_shift b_shift;
-        e_unary_op out_op;
-    } s_control;
-endpackage
+module m_cond_decoder(
+    input e_kind kind,
+    input[31:0] instruction,
+    output e_cond cond
+);
+    assign cond = COND_NV;
+endmodule
