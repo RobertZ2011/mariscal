@@ -49,7 +49,7 @@ package p_alu;
         e_core_op op;
         e_unary_op a_op;
         e_unary_op b_op;
-        s_shift b_shift;
+        s_shift pre_shift;
         e_unary_op out_op;
     } s_control;
 endpackage

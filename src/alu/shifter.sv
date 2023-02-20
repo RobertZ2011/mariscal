@@ -1,6 +1,6 @@
 import p_common::*;
 
-module m_shifter(
+module m_alu_preshifter(
 	input[31:0] data,
 	input s_shift shift,
 
