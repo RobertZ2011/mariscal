@@ -34,7 +34,7 @@ module registers(
 	assign a = (sel_a == 0) ? 0 : registers[sel_a - 1];
 	assign b = (sel_b == 0) ? 0 : registers[sel_b - 1];
 
-	always @(negedge nrst or negedge clk) begin
+	always @(posedge clk or negedge nrst) begin
 		if (!nrst) begin
 			for (integer i = 0; i < 31; i = i + 1)
 				registers[i] <= 0;

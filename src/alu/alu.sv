@@ -1,9 +1,9 @@
 import p_alu::*;
 
 module m_alu(
-	input s_control ctrl,
 	input[31:0] a,
 	input[31:0] b,
+	input s_control ctrl,
 
 	output[31:0] out,
 	output e_cmp_res cmp
