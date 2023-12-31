@@ -13,42 +13,23 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
-import p_alu::*;
-import p_common::*;
-import p_instruction::*;
-
-module m_decoder(
-	input[31:0] instruction,
-	output s_decoded decoded
-);
-
-	wire e_kind kind = f_instr_kind(instruction[31:28]);
+module test;
+	reg[31:0] instruction;
 	wire e_cond cond;
-	wire s_control ctrl;
-	wire s_shift shift;
-	wire[31:0] immediate;
-	wire[4:0] rd;
-	wire[4:0] rs;
-	wire[4:0] rq;
+	wire e_kind kind;
 
-	m_cond_decoder c(kind, instruction, cond);
-	m_reg_decoder r(kind, instruction, rd, rs, rq);
-	m_alu_decoder a(kind, instruction, ctrl);
-	m_immediate_decoder i(kind, instruction, immediate);
-	m_shift_decoder s(kind, instruction, shift);
+    m_decoder_kind m_kind(
+		.instruction(instruction),
+		.kind(kind)
+	);
 
-	assign decoded = {
-		kind,
-		cond,
+	m_decoder_cond m_cond(
+		.instruction(instruction),
+		.kind(kind),
+		.cond(cond)
+	);
 
-		ctrl,
-
-		rd,
-		rs,
-		rq,
-
-		immediate,
-
-		shift
-	};
+	initial begin
+		$finish;
+	end
 endmodule

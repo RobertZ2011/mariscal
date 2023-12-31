@@ -13,42 +13,25 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
-import p_alu::*;
-import p_common::*;
 import p_instruction::*;
 
-module m_decoder(
+module m_decoder_cond(
+	input e_kind kind,
 	input[31:0] instruction,
-	output s_decoded decoded
+	output e_cond cond
 );
+	assign cond = f_cond(kind);
 
-	wire e_kind kind = f_instr_kind(instruction[31:28]);
-	wire e_cond cond;
-	wire s_control ctrl;
-	wire s_shift shift;
-	wire[31:0] immediate;
-	wire[4:0] rd;
-	wire[4:0] rs;
-	wire[4:0] rq;
-
-	m_cond_decoder c(kind, instruction, cond);
-	m_reg_decoder r(kind, instruction, rd, rs, rq);
-	m_alu_decoder a(kind, instruction, ctrl);
-	m_immediate_decoder i(kind, instruction, immediate);
-	m_shift_decoder s(kind, instruction, shift);
-
-	assign decoded = {
-		kind,
-		cond,
-
-		ctrl,
-
-		rd,
-		rs,
-		rq,
-
-		immediate,
-
-		shift
-	};
+	function e_cond f_cond(e_kind k);
+		case (k)
+			KIND_RRR: return COND_AL;
+			KIND_MEMORY: return COND_AL;
+			KIND_MODEL: return COND_AL;
+			KIND_CUSTOM: return COND_AL;
+			/* TODO: make this work. */
+			KIND_RRI: return COND_AL;
+			/* TODO: figure out making this an exception. */
+			default: return COND_NV;
+		endcase
+	endfunction
 endmodule

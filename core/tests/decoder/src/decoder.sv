@@ -13,12 +13,17 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
-import p_instruction::*;
+module test;
+	reg[31:0] instruction;
+	wire s_decoded decoded;
 
-module m_cond_decoder(
-    input e_kind kind,
-    input[31:0] instruction,
-    output e_cond cond
-);
-    assign cond = COND_NV;
+	m_decoder decoder(
+		.instruction(instruction),
+
+	.decoded(decoded)
+	);
+
+	initial begin
+		$finish;
+	end
 endmodule

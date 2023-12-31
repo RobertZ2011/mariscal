@@ -9,13 +9,13 @@ build_and_run () {
 	local build="build/${target}"
 
 	# Includes
-	for include in "${2}"; do
+	for include in ${2}; do
 		local path="${include_root}/${include}"
 		includes+="${path} "
 	done
 
 	# Sources
-	for source in "${3}"; do
+	for source in ${3}; do
 		local path="${src_root}/${source}"
 		sources+="${path} "
 	done

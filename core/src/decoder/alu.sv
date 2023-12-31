@@ -17,14 +17,27 @@ import p_alu::*;
 import p_instruction::*;
 
 module m_alu_decoder(
-    input e_kind kind,
-    input[31:0] instruction,
-    output s_control ctrl
+	input e_kind kind,
+	input[31:0] instruction,
+	output s_control ctrl
 );
 
-    assign ctrl = f_decode(kind, instruction);
+	assign ctrl = f_decode(kind, instruction);
 
-    function s_control f_decode_bin_op(input[4:0] i);
+	function s_control f_invalid;
+        return {
+            CORE_OP_INVALID,
+            UNARY_OP_ID,
+            UNARY_OP_ID,
+            {
+                SHIFT_SHL,
+                3'b0
+            },
+            UNARY_OP_ID
+        };
+    endfunction
+
+	function s_control f_decode_bin_op(input[4:0] i);
 		case (i)
 			BINOP_ADD: return {
 				CORE_OP_ADD,
@@ -160,36 +173,14 @@ module m_alu_decoder(
 				UNARY_OP_ID
 			};
 
-			default: return {
-				CORE_OP_INVALID,
-				UNARY_OP_ID, 
-				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
-				UNARY_OP_ID
-			};
+			default: return f_invalid();
 		endcase
 	endfunction
 
-    function s_control f_invalid;
-        return {
-            CORE_OP_INVALID,
-            UNARY_OP_ID,
-            UNARY_OP_ID,
-            {
-                SHIFT_SHL,
-                3'b0
-            },
-            UNARY_OP_ID
-        };
-    endfunction
-
-    function f_decode(e_kind k, input[31:0] i);
-        case (k)
-            KIND_RRR: return f_decode_bin_op(i[27:23]);
-            default: return f_invalid();
-        endcase
-    endfunction
+	function f_decode(e_kind k, input[31:0] i);
+		case (k)
+			KIND_RRR: return f_decode_bin_op(i[27:23]);
+			default: return f_invalid();
+		endcase
+	endfunction
 endmodule
