@@ -1,13 +1,13 @@
 import p_common::*;
 
 module m_alu_preshifter(
-	input[31:0] data,
+	input[31:0] in,
 	input s_shift shift,
 
 	output[31:0] shifted
 );
 
-	assign shifted = f_shift(data, shift);
+	assign shifted = f_shift(in, shift);
 
 	function[31:0] f_shift(input[31:0] d, input s_shift s);
 		case (s.shift_type)

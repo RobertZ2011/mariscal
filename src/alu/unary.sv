@@ -11,7 +11,7 @@ module m_alu_unary(
 		case (o)
 			UNARY_OP_ID: return i;
 			UNARY_OP_NEG: return -i;
-			UNARY_OP_NOT: return !i;
+			UNARY_OP_NOT: return ~i;
 			UNARY_OP_ZERO: return 32'b0;
 		endcase
 	endfunction
