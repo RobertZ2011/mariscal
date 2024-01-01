@@ -48,6 +48,68 @@ module test;
 	);
 
 	initial begin
+		// RRR tests
+		// Test rd
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r%d, r1, r2'', reg));
+		#10
+		assert (rd == reg);
+		')
+
+		// Test rs register
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r0, r%d, r2'', reg));
+		#10
+		assert (rs_sel == reg)
+		')
+
+		// Test rq register
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r0, r1, r%d'', reg));
+		#10
+		assert (rq_sel == reg)
+		')
+
+		// Test rs register reads
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r0, r%d, r2'', reg));
+		rs_in = reg;
+		#10
+		assert (val_a == reg)
+		')
+
+		//Test rq register reads
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r0, r1, r%d'', reg));
+		rq_in = reg;
+		#10
+		assert (val_b == reg)
+		')
+
+		// RRI tests
+		// Test rd
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r%d, r1, 5'', reg));
+		#10
+		assert (rd == reg)
+		')
+
+		// Test rs register
+		forloop(`reg', `0', `31', `
+		instruction = asm(format(``add r0, r%d, 5'', reg));
+		#10
+		assert (rs_sel == reg)
+		')
+
+		// Test immediates
+		instruction = asm(`add r0, r1, 0');
+		#10
+		assert (val_b == 0)
+
+		instruction = asm(`add r0, r1, -1');
+		#10
+		assert (val_b == -1)
+
 		$finish;
 	end
 endmodule

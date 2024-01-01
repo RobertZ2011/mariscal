@@ -31,36 +31,45 @@ module m_decoder_args(
 );
 	function logic[31:0] f_val_a(e_kind k, input[31:0] i);
 		case (k)
+			KIND_RRR: f_val_a = rs_in;
+			KIND_RRI: f_val_a = rs_in;
 			default: f_val_a = 32'b0;
 		endcase
 	endfunction
 
 	function logic[31:0] f_val_b(e_kind k, input[31:0] i);
 		case (k)
+			KIND_RRR: f_val_b = rq_in;
+			KIND_RRI: f_val_b = { {20{i[11]}}, i[11:0] };
 			default: f_val_b = 32'b0;
 		endcase
 	endfunction
 
 	function logic[4:0] f_rs_sel(e_kind k, input[31:0] i);
 		case (k)
+			KIND_RRR: f_rs_sel = i[17:13];
+			KIND_RRI: f_rs_sel = i[19:15];
 			default: f_rs_sel = 5'b0;
 		endcase
 	endfunction;
 
 	function logic[4:0] f_rq_sel(e_kind k, input[31:0] i);
 		case (k)
+			KIND_RRR: f_rq_sel = i[12:8];
 			default: f_rq_sel = 5'b0;
 		endcase
 	endfunction;
 
 	function logic[4:0] f_rd(e_kind k, input[31:0] i);
 		case (k)
+			KIND_RRR: f_rd = i[22:18]; 
+			KIND_RRI: f_rd = i[24:20];
 			default: f_rd = 5'b0;
 		endcase
 	endfunction;
 
 	assign val_a = f_val_a(kind, instruction);
-	assign val_b = f_val_a(kind, instruction);
+	assign val_b = f_val_b(kind, instruction);
 
 	assign rs_sel = f_rs_sel(kind, instruction);
 	assign rq_sel = f_rq_sel(kind, instruction);
