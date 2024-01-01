@@ -16,13 +16,20 @@
 import p_alu::*;
 import p_instruction::*;
 
-module m_alu_decoder(
+module m_decoder_alu(
 	input e_kind kind,
 	input[31:0] instruction,
-	output s_control ctrl
+	output s_control control
 );
+	wire s_shift shift;
 
-	assign ctrl = f_decode(kind, instruction);
+	m_decoder_shift m_shift(
+		.kind(kind),
+		.instruction(instruction),
+		.shift(shift)
+	);
+
+	assign control = f_decode(kind, instruction);
 
 	function s_control f_invalid;
         return {
@@ -31,7 +38,7 @@ module m_alu_decoder(
             UNARY_OP_ID,
             {
                 SHIFT_SHL,
-                3'b0
+                5'b0
             },
             UNARY_OP_ID
         };
@@ -39,148 +46,109 @@ module m_alu_decoder(
 
 	function s_control f_decode_bin_op(input[4:0] i);
 		case (i)
-			BINOP_ADD: return {
+			BINOP_ADD: f_decode_bin_op = {
 				CORE_OP_ADD,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_SUB: return {
+			BINOP_SUB: f_decode_bin_op = {
 				CORE_OP_ADD,
 				UNARY_OP_ID, 
 				UNARY_OP_NEG,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
 
-			BINOP_AND: return {
+			BINOP_AND: f_decode_bin_op = {
 				CORE_OP_AND,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_OR: return {
+			BINOP_OR: f_decode_bin_op = {
 				CORE_OP_AND,
 				UNARY_OP_NOT, 
 				UNARY_OP_NOT,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_NOT
 			};
-			BINOP_XOR: return {
+			BINOP_XOR: f_decode_bin_op = {
 				CORE_OP_XOR,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
 
-			BINOP_SHL: return {
+			BINOP_SHL: f_decode_bin_op = {
 				CORE_OP_SHL,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_SHR: return {
+			BINOP_SHR: f_decode_bin_op = {
 				CORE_OP_SHR,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_ASL: return {
+			BINOP_ASL: f_decode_bin_op = {
 				CORE_OP_ASL,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_ASR: return {
+			BINOP_ASR: f_decode_bin_op = {
 				CORE_OP_ASR,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
 				UNARY_OP_ID
 			};
-			BINOP_ROR: return {
-				CORE_OP_SHL,
-				UNARY_OP_ID, 
-				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
-				UNARY_OP_ID
-			};
-			BINOP_ROL: return {
+			BINOP_ROR: f_decode_bin_op = {
 				CORE_OP_ROR,
 				UNARY_OP_ID, 
 				UNARY_OP_ID,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
+				shift,
+				UNARY_OP_ID
+			};
+			BINOP_ROL: f_decode_bin_op = {
+				CORE_OP_ROL,
+				UNARY_OP_ID, 
+				UNARY_OP_ID,
+				shift,
 				UNARY_OP_ID
 			};
 			
-			BINOP_NOT: return {
+			BINOP_NOT: f_decode_bin_op = {
 				CORE_OP_ADD,
-				UNARY_OP_NOT, 
-				UNARY_OP_ZERO,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
-				UNARY_OP_ID
+				UNARY_OP_ID, 
+				UNARY_OP_ID,
+				shift,
+				UNARY_OP_NOT
 			};
-			BINOP_NEG: return {
+			BINOP_NEG: f_decode_bin_op = {
 				CORE_OP_ADD,
-				UNARY_OP_ZERO, 
-				UNARY_OP_NEG,
-				{
-					SHIFT_SHL,
-					3'b0
-				},
-				UNARY_OP_ID
+				UNARY_OP_ID, 
+				UNARY_OP_ID,
+				shift,
+				UNARY_OP_NEG
 			};
 
-			default: return f_invalid();
+			default: f_decode_bin_op = f_invalid();
 		endcase
 	endfunction
 
-	function f_decode(e_kind k, input[31:0] i);
+	function s_control f_decode(e_kind k, input[31:0] i);
 		case (k)
-			KIND_RRR: return f_decode_bin_op(i[27:23]);
-			default: return f_invalid();
+			KIND_RRR: f_decode = f_decode_bin_op(i[27:23]);
+			default: f_decode = f_invalid();
 		endcase
 	endfunction
 endmodule
