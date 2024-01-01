@@ -15,13 +15,23 @@
 */
 import p_instruction::*;
 
-module m_shift_decoder(
-    input e_kind kind,
-    input[31:0] instruction,
-    output s_shift shift
+module m_decoder_shift(
+	input e_kind kind,
+	input[31:0] instruction,
+	output s_shift shift
 );
-    assign shift = {
-        SHIFT_SHL,
-        3'b0
-    };
+	function s_shift f_shift(e_kind k, input[31:0] i);
+		case (k)
+			KIND_RRR: f_shift = {
+				i[7:5],
+				i[4:0]
+			};
+			default: f_shift = {
+				SHIFT_SHL,
+				5'b0
+			};
+		endcase
+	endfunction
+
+	assign shift = f_shift(kind, instruction);
 endmodule

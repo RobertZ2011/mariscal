@@ -15,7 +15,7 @@
 */
 module test;
 	reg[31:0] instruction;
-	wire e_cond cond;
+	wire s_shift shift;
 	wire e_kind kind;
 
     m_decoder_kind m_kind(
@@ -23,75 +23,27 @@ module test;
 		.kind(kind)
 	);
 
-	m_decoder_cond m_cond(
+	m_decoder_shift m_shift(
 		.instruction(instruction),
 		.kind(kind),
-		.cond(cond)
+		.shift(shift)
 	);
 
 	initial begin
 		// RRR
 		instruction = 32'h0;
 		#10;
-		assert (cond == COND_AL)
+		assert (shift == {
+            SHIFT_SHL,
+            5'b0
+        })
 
 		instruction = 32'h0fffffff;
 		#10;
-		assert (cond == COND_AL)
-
-		// Memory
-		instruction = 32'h10000000;
-		#10;
-		assert (cond == COND_AL)
-
-		instruction = 32'h1fffffff;
-		#10;
-		assert (cond == COND_AL)
-
-		// Model
-		instruction = 32'h20000000;
-		#10;
-		assert (cond == COND_AL)
-
-		instruction = 32'h2fffffff;
-		#10;
-		assert (cond == COND_AL)
-
-		// Invalid
-		instruction = 32'h30000000;
-		#10;
-		assert (cond == COND_NV)
-
-		instruction = 32'h3fffffff;
-		#10;
-		assert (cond == COND_NV)
-
-		// RRI
-		instruction = 32'h40000000;
-		#10;
-		assert (cond == COND_AL)
-
-		instruction = 32'h7fffffff;
-		#10;
-		assert (cond == COND_AL)
-
-		//Invalid
-		instruction = 32'h80000000;
-		#10;
-		assert (cond == COND_NV)
-
-		instruction = 32'hbfffffff;
-		#10;
-		assert (cond == COND_NV)
-
-		// Custom
-		instruction = 32'hc0000000;
-		#10;
-		assert (cond == COND_AL)
-
-		instruction = 32'hffffffff;
-		#10;
-		assert (cond == COND_AL)
+		assert (shift == {
+            SHIFT_INVALID,
+            5'b11111
+        })
 
 		$finish;
 	end
