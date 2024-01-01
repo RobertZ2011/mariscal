@@ -1,3 +1,17 @@
+export PATH=../../../../bibe-as/target/debug:$PATH
+
+preprocess () {
+	local res=""
+
+	for src in ${1}; do
+		local tmp=$(mktemp)
+		m4 ../include.m4 "${src}" > "${tmp}"
+		res+="${tmp} "
+	done
+
+	echo "${res}"
+}
+
 build_and_run () {
 	local include_root="../../src/include"
 	local src_root="../../src" 
@@ -5,7 +19,7 @@ build_and_run () {
 	local target="${1}"
 	local includes="${include_root}/common.sv "
 	local sources=""
-	local tests=${4}
+	local tests=$(preprocess "${4}")
 	local build="build/${target}"
 
 	# Includes

@@ -24,7 +24,7 @@ module test;
 
 	initial begin
 		// RRR
-		instruction = 32'h0;
+		instruction = asm(`add r1, r2, r3');
 		#10;
 		assert (out == KIND_RRR)
 
