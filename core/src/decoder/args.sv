@@ -15,37 +15,55 @@
 */
 import p_instruction::*;
 
-module m_reg_decoder(
+module m_decoder_args(
 	input e_kind kind,
 	input[31:0] instruction,
 
-	output[4:0] rd,
-	output[4:0] rs,
-	output[4:0] rq
+	output[4:0] rs_sel,
+	input[31:0] rs_in,
+	output[4:0] rq_sel,
+	input[31:0] rq_in,
+
+	output[31:0] val_a,
+	output[31:0] val_b,
+
+	output[4:0] rd
 );
-
-	function[4:0] f_rd(e_kind k, input[31:0] i);
+	function logic[31:0] f_val_a(e_kind k, input[31:0] i);
 		case (k)
-			KIND_RRR: return i[12:8];
-			default: return 5'b0;
+			default: f_val_a = 32'b0;
 		endcase
 	endfunction
 
-	function[4:0] f_rs(e_kind k, input[31:0] i);
+	function logic[31:0] f_val_b(e_kind k, input[31:0] i);
 		case (k)
-			KIND_RRR: return i[12:8];
-			default: return 5'b0;
+			default: f_val_b = 32'b0;
 		endcase
 	endfunction
 
-	function[4:0] f_rq(e_kind k, input[31:0] i);
+	function logic[4:0] f_rs_sel(e_kind k, input[31:0] i);
 		case (k)
-			KIND_RRR: return i[12:8];
-			default: return 5'b0;
+			default: f_rs_sel = 5'b0;
 		endcase
-	endfunction
+	endfunction;
+
+	function logic[4:0] f_rq_sel(e_kind k, input[31:0] i);
+		case (k)
+			default: f_rq_sel = 5'b0;
+		endcase
+	endfunction;
+
+	function logic[4:0] f_rd(e_kind k, input[31:0] i);
+		case (k)
+			default: f_rd = 5'b0;
+		endcase
+	endfunction;
+
+	assign val_a = f_val_a(kind, instruction);
+	assign val_b = f_val_a(kind, instruction);
+
+	assign rs_sel = f_rs_sel(kind, instruction);
+	assign rq_sel = f_rq_sel(kind, instruction);
 
 	assign rd = f_rd(kind, instruction);
-	assign rs = f_rs(kind, instruction);
-	assign rq = f_rq(kind, instruction);
 endmodule

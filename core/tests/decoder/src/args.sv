@@ -13,12 +13,41 @@
 * these sources, You must maintain the Source Location visible on the
 * external case of any product you make using this documentation.
 */
-import p_instruction::*;
+module test;
+	reg[31:0] instruction;
+	wire e_kind kind;
 
-module m_immediate_decoder(
-    input e_kind kind,
-    input[31:0] instruction,
-    output[31:0] immedate
-);
-    assign immedate = 32'b0;
+	wire[31:0] val_a;
+	wire[31:0] val_b;
+	wire[4:0] rs_sel;
+	wire[4:0] rq_sel;
+	wire[4:0] rd;
+
+	reg[31:0] rs_in;
+	reg[31:0] rq_in;
+
+	m_decoder_kind m_kind(
+		.instruction(instruction),
+		.kind(kind)
+	);
+
+	m_decoder_args m_args(
+		.instruction(instruction),
+		.kind(kind),
+
+		.val_a(val_a),
+		.val_b(val_b),
+
+		.rs_sel(rs_sel),
+		.rs_in(rs_in),
+
+		.rq_sel(rq_sel),
+		.rq_in(rq_in),
+
+		.rd(rd)
+	);
+
+	initial begin
+		$finish;
+	end
 endmodule
