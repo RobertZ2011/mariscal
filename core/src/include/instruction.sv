@@ -94,10 +94,7 @@ package p_instruction;
 		s_control alu_config;
 
 		bit[4:0] rd;
-		bit[4:0] rs;
-		bit[4:0] rq;
-
-		bit[31:0] immedate;
-		s_shift shift;
+		bit[31:0] a;
+		bit[31:0] b;
 	} s_decoded;
 endpackage

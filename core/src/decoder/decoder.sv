@@ -19,36 +19,69 @@ import p_instruction::*;
 
 module m_decoder(
 	input[31:0] instruction,
+
+	output[4:0] rs_sel,
+	input[31:0] rs_in,
+	output[4:0] rq_sel,
+	input[31:0] rq_in,
+
 	output s_decoded decoded
 );
 
-	wire e_kind kind = f_instr_kind(instruction[31:28]);
+	wire e_kind kind;
 	wire e_cond cond;
-	wire s_control ctrl;
+	wire s_control control;
 	wire s_shift shift;
-	wire[31:0] immediate;
+	wire[31:0] a;
+	wire[31:0] b;
 	wire[4:0] rd;
-	wire[4:0] rs;
-	wire[4:0] rq;
 
-	m_cond_decoder c(kind, instruction, cond);
-	m_reg_decoder r(kind, instruction, rd, rs, rq);
-	m_alu_decoder a(kind, instruction, ctrl);
-	m_immediate_decoder i(kind, instruction, immediate);
-	m_shift_decoder s(kind, instruction, shift);
+	m_decoder_kind m_kind(
+		.instruction(instruction),
+		.kind(kind)
+	);
+
+	m_decoder_cond m_cond(
+		.instruction(instruction),
+		.kind(kind),
+		.cond(cond)
+	);
+
+	m_decoder_shift m_shift(
+		.instruction(instruction),
+		.kind(kind),
+		.shift(shift)
+	);
+
+	m_decoder_args m_args(
+		.instruction(instruction),
+		.kind(kind),
+
+		.rd(rd),
+		.val_a(a),
+		.val_b(b),
+
+		.rs_sel(rs_sel),
+		.rs_in(rs_in),
+
+		.rq_sel(rq_sel),
+		.rq_in(rq_in)
+	);
+
+	m_decoder_alu m_alu(
+		.instruction(instruction),
+		.kind(kind),
+		.control(control)
+	);
 
 	assign decoded = {
 		kind,
 		cond,
 
-		ctrl,
+		control,
 
 		rd,
-		rs,
-		rq,
-
-		immediate,
-
-		shift
+		a,
+		b
 	};
 endmodule
