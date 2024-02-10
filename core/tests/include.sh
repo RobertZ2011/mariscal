@@ -1,12 +1,21 @@
 export PATH=../../../../bibe-as/target/debug:$PATH
+set -e
+
+for arg in "$@"; do
+case $arg in
+    --debug) set -x ;;
+  esac
+done
 
 preprocess () {
 	local res=""
 
 	for src in ${1}; do
-		local tmp=$(mktemp)
-		m4 ../include.m4 "${src}" > "${tmp}"
-		res+="${tmp} "
+		local gen="build/generated/${src}"
+		local dir=$(dirname "${gen}")
+		mkdir -p "${dir}"
+		m4 ../include.m4 "${src}" > "${gen}"
+		res+="${gen} "
 	done
 
 	echo "${res}"
@@ -21,6 +30,7 @@ build_and_run () {
 	local sources=""
 	local tests=$(preprocess "${4}")
 	local build="build/${target}"
+	local args="${5}"
 
 	# Includes
 	for include in ${2}; do
@@ -35,8 +45,9 @@ build_and_run () {
 	done
 
 	printf "\nBuilding target %s\n" "${target}"
-	mkdir -p "${build}"
-	verilator --binary --timing --assert -sv -j 0 --top test --prefix "${target}" --Mdir "${build}" ${includes} ${sources} ${tests}
+
+	verilator --lint-only --timing --assert -sv --top test --prefix "${target}" --Mdir "${build}" ${args} ${includes} ${sources} ${tests}
+	verilator --binary --timing --assert -sv -j 0 --top test --prefix "${target}" --Mdir "${build}" ${args} ${includes} ${sources} ${tests}
 
 	printf "\nRunning target %s\n" "${target}"
 	"./${build}/${target}"
